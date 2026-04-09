@@ -217,7 +217,14 @@ PALETTE = ["#00d4ff", "#7c3aed", "#f59e0b", "#10b981", "#f43f5e", "#fb923c"]
 # ── Data ──────────────────────────────────────────────────────────────────────
 @st.cache_data
 def load_data():
-    df = pd.read_csv("glass.csv")
+    # Load from UCI ML Repository — no local file needed
+    url = "https://archive.ics.uci.edu/ml/machine-learning-databases/glass/glass.data"
+    col_names = ["Id", "RI", "Na", "Mg", "Al", "Si", "K", "Ca", "Ba", "Fe", "Type"]
+    try:
+        df = pd.read_csv(url, names=col_names).drop(columns=["Id"])
+    except Exception:
+        # Fallback: try local glass.csv if present
+        df = pd.read_csv("glass.csv")
     df["TypeLabel"] = df["Type"].map(GLASS_TYPES)
     return df
 
